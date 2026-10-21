@@ -5,7 +5,7 @@ on:
       target_ref:
         description: Commit or branch to check (record resolved SHA)
         required: true
-        default: dfb17949cbf9ba5d93ac41c76cbe436a3a331d07
+        default: main
         type: string
       test_scope:
         description: full runs the whole check suite (default); windows-registry runs only the PowerShell 5.1 registry integration spec, on the Windows runners

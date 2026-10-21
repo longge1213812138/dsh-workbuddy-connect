@@ -2,13 +2,11 @@
 
 [English](./README.en.md) | 中文
 
-## 停止维护公告
+## 仓库说明
 
-2026 年 10 月 20 日起，WorkBuddy 开始限制非官方客户端发出的请求。单从技术角度看，这类校验不难跨越。不过，送的模型额度既然附带了使用场地要求，WorkBuddy 已明确希望区分官方客户端与第三方接入，本项目尊重这一边界，不再继续适配。使用官方 WorkBuddy 客户端当然最安全。
+本仓库是 `dsh-workbuddy-connect` 的社区维护分支，由 [longge1213812138](https://github.com/longge1213812138) 接手维护，基于原作者 [corrinehu](https://github.com/corrinehu) 的 v0.7.9（MIT）继续开发。原仓库已宣布停止维护；本仓库保留完整历史、许可证和贡献者署名。
 
-同时，由于个人时间和精力有限，本项目即日起停止维护：不再处理新功能请求与 PR，不再提供更新、兼容性修复及问题支持。项目仓库计划于 **2026 年 10 月 22 日下线**。
-
-非常感谢大家这段时间的使用、反馈和贡献，也谢谢每一位帮忙测试、排查问题和提交 PR 的朋友。特别高兴这个小插件曾给大家带来便利！
+**风险提示**：WorkBuddy 已开始限制非官方客户端请求。本分支**不会绕过**官方校验或限制，也不保证相关接口长期可用；上游一旦收紧限制，插件可能失效。请先阅读文末「免责声明」，自行评估账号风险。使用官方 WorkBuddy 客户端始终是最安全的选择。
 
 ---
 
@@ -18,36 +16,44 @@
 
 **前置**：本机已安装并登录 WorkBuddy（国内版）或 WorkBuddy AI 桌面 App。插件直接复用 App 的登录状态，账号切换自动跟随，两版互不影响。
 
+**当前主线适配 DSH `0.2.1-rc.2`**；其他内核请先看文末「版本兼容与历史版本」，不要强行安装 main。
+
 **推荐：把安装交给本机已有的 Agent**——任何具备终端与文件操作能力的助手（DSH Agent、Codex、Claude Code、Cursor 等）都可以，把下面这段话原样发给它：
 
 ```text
-请帮我安装并验证 DSH（DeepSeek Harness）插件 dsh-workbuddy-connect（项目地址：https://github.com/corrinehu/dsh-workbuddy-connect）：
-先阅读项目 README，确认我实际使用的界面（Web / Desktop / TUI）与 DSH 内核版本，桌面版以 App 内置核心为准，不要用独立 CLI 的版本代替；
-再按版本对应关系从 npm 正式包安装（0.2.1-rc.2→0.7.9、0.2.1-rc.1→0.7.7、0.2.0-rc.2→0.7.6、rc.1→0.7.0、0.1.5–0.1.7→0.6.5），优先走本机受支持的非插件市场渠道；部分 Desktop 发行版（尤其官方 Electron 版）的 profile 由 App 管理，各发行版规则未必相同，先确认我所用的发行版，再探查其合规的安装方式，但不得绕过其校验；
-任何本地文件或配置改动，先征得我同意并做好备份；
-装完后验证模型选择器里出现 WorkBuddy 分组，并陪我完成一次简短对话；
-若 Desktop 安装仍因 generation 校验失败（如 @types/retry 误报），请如实报告、参照上游 dataelement/dsh-desktop#688，并建议我改用独立的 Web / TUI，不要修改依赖包或绕过校验。
+请帮我安装并验证 DSH（DeepSeek Harness）插件 dsh-workbuddy-connect，源码仓库：https://github.com/longge1213812138/dsh-workbuddy-connect
+先阅读仓库 README，确认我实际使用的界面（Web / Desktop / TUI）与 DSH 内核版本；桌面版以 App 内置核心为准，不要用独立 CLI 的版本代替。
+本仓库当前主线只适配 DSH 0.2.1-rc.2。版本匹配时，从我的 GitHub 仓库源码安装，不要安装 npm 上同名的旧包：
+  dsh plugin --profile web add github:longge1213812138/dsh-workbuddy-connect
+如果内核是 0.2.1-rc.2，TUI 也用上面的源码安装；如果内核更旧，先告诉我，不要强行把 main 装到旧内核。
+Desktop 的 profile 可能由 App 管理；先确认我所用的发行版，再探查其合规安装方式，不要绕过它的校验。
+任何本地文件或配置改动，先征得我同意并做好备份。
+装完后验证模型选择器里出现 WorkBuddy 分组，并陪我完成一次简短对话。
+若安装失败，请贴出完整错误与 pnpm.log 的第一处错误；不要修改依赖包或绕过校验。
 ```
 
-内核与插件版本速查（完整对应表见文末「版本兼容与历史版本」）：
+内核与安装来源速查（完整表见文末）：
 
-| DSH 内核 | 推荐插件版 |
+| DSH 内核 | 安装来源 |
 |---|---|
-| 0.2.1-rc.2 | 0.7.9（npm latest） |
-| 0.2.1-rc.1 | 0.7.7 |
-| 0.2.0-rc.2 | 0.7.6 |
-| 0.2.0-rc.1 | 0.7.0 |
-| 0.1.5 – 0.1.7 | 0.6.5 |
+| `0.2.1-rc.2` | 本仓库 `main`（0.8.0） |
+| `0.2.1-rc.1` | 上游 npm `dsh-workbuddy-connect@0.7.7` |
+| `0.2.0-rc.2` | 上游 npm `dsh-workbuddy-connect@0.7.6` |
+| `0.2.0-rc.1` | 上游 npm `dsh-workbuddy-connect@0.7.0` |
+| `0.1.5` – `0.1.7` | 上游 npm `dsh-workbuddy-connect@0.6.5` |
 
 <details>
 <summary>手动安装（命令行，仅 Web / TUI）</summary>
 
 ```sh
-# Web（按实际内核固定版本，示例为 0.2.1-rc.2 → 0.7.9；也可用 github:corrinehu/dsh-workbuddy-connect 从源码安装）
-dsh plugin --profile web add dsh-workbuddy-connect@0.7.9
+# Web：从本仓库源码安装（当前主线，DSH 0.2.1-rc.2）
+dsh plugin --profile web add github:longge1213812138/dsh-workbuddy-connect
 dsh web
 
-# TUI（示例为 0.1.x 内核；该 profile 需用 pnpm 11 安装，如 npx pnpm@11）
+# 或固定到某个发布 tag（推荐生产使用）
+dsh plugin --profile web add github:longge1213812138/dsh-workbuddy-connect#v0.8.0
+
+# TUI：0.2.1-rc.2 内核用上面的源码安装；更旧内核按上表安装上游 npm 历史版本
 dsh plugin --profile dsh-tui add dsh-workbuddy-connect@0.6.5
 dsh --profile dsh-tui
 ```
@@ -59,6 +65,41 @@ dsh --profile dsh-tui
 > **Desktop**：部分 Desktop 发行版（尤其官方 Electron 版）的 `desktop` profile 由 App 管理，官方版会直接拒绝独立 CLI 的 `--profile desktop`；其他发行版规则未必相同，请先检查你所用的发行版，不要盲用独立 CLI 的 `--profile desktop`。可以让 Agent 探查是否有合规的非市场安装路径，但不保证可行；切勿盲改 App 管理的目录或绕过其校验。
 
 **验证**：重启对应界面后，模型选择器出现「WorkBuddy / WorkBuddy AI」分组（只装一版就只验对应一组），并从分组里选一个模型完成一次简短对话、能正常回复，才算安装成功。
+
+## 维护者指南（发给 Agent）
+
+本仓库后续的维护按本节执行。需要修 bug、适配新内核或发版时，把下面这段话连同你的具体需求发给 Agent：
+
+```text
+你是 dsh-workbuddy-connect 维护分支（https://github.com/longge1213812138/dsh-workbuddy-connect）的维护 Agent。请先完整阅读 README.md、package.json、cordis.patch.yml、src/update.ts，并用 dsh --version 确认本机 DSH 内核版本（桌面版以 App 内置核心为准）。
+维护规则：
+1. 先安装依赖并运行完整检查：npx pnpm@10 install --frozen-lockfile && npx pnpm@10 run check。任何改动都必须让 typecheck、test、build 全部通过；不要通过删测试或放宽断言来“修复”。
+2. peerDependencies 必须与目标 DSH 内核严格对应（当前 0.2.1-rc.2）。升级内核时同步修改 package.json 的 peer/dev 版本、pnpm-lock.yaml，以及 THIRD_PARTY_NOTICES.txt（如涉及）。
+3. 修改 src 后必须重新构建 lib 并一起提交；GitHub 源码安装实际加载的是 lib，不能只提交 src。
+4. 版本号遵循 SemVer：修 bug 升 patch，新增功能升 minor，破坏兼容升 major；同时更新 README 的版本对应表和更新记录。
+5. 不要绕过 WorkBuddy 的官方校验或限制，不要伪造请求头、证书或客户端身份；上游限制导致无法修复时，如实写进「已知限制」。
+6. 提交前检查 git diff，确保没有令牌、日志、个人路径、node_modules 或构建缓存；提交信息用简洁的中文或英文祈使句。
+7. 完成后再次运行 npx pnpm@10 run check，提交并推送到 main；发版时打 vX.Y.Z tag 并创建 GitHub Release，写清变更与兼容内核。
+请先告诉我你计划改什么、为什么、如何验证；我确认后再动文件。
+```
+
+常用命令：
+
+```sh
+npx pnpm@10 install --frozen-lockfile
+npx pnpm@10 run check
+git add -A
+git commit -m "fix: ..."
+git push origin main
+```
+
+> Windows 提示：如果终端已设置 `WSLENV`，先执行 `env -u WSLENV npx pnpm@10 run check`；否则 `tests/issue-133-wslenv-helper-env.spec.ts` 会因环境污染失败。
+
+维护边界：
+
+- 本仓库只保证 `package.json` 中 peer 版本对应内核的可用性；其他内核使用上表的历史版本。
+- 不接收绕过 WorkBuddy 客户端校验、破解额度或伪造身份的改动。
+- 上游私有接口变化导致无法修复时，保留失败原因和日志位置，并在 README 的「已知限制」中记录。
 
 ## 功能
 
@@ -153,35 +194,40 @@ llm-workbuddy:
 
 ## 版本兼容与历史版本
 
-插件版本必须与 DSH 内核匹配，不匹配的组合会导致 DSH 启动失败；桌面版按其内置核心选择插件版本。npm 上的最新版不一定适合你，以实际内核的匹配关系为准：
+插件版本必须与 DSH 内核匹配，不匹配的组合会导致 DSH 启动失败；桌面版按其内置核心选择插件版本。本仓库从 0.8.0 起接手维护，目前只适配 `0.2.1-rc.2`；更旧内核请使用上游 npm 历史版本，不要安装本仓库 main。
 
-| DSH 内核 | 推荐插件版 | 注意事项 |
+| DSH 内核 | 推荐版本 / 来源 | 注意事项 |
 |---|---|---|
-| `0.2.1-rc.2` | `0.7.9` | 仅适配这一内核；`0.2.0-rc.2` 与 `0.2.1-rc.2` 不同，请核对 App 内置版本。 |
-| `0.2.1-rc.1` | `0.7.7` | 内核升级到 `@earendil-works/pi-ai` 1.3.0，插件同步自带 1.3.0，历史遗留的 0.87.1 overrides 必须移除（见下方 pi-ai 说明）。 |
-| `0.2.0-rc.2` | `0.7.6` | 上一代内核线；修复企业账号模型目录缺项与国际版对话被渠道校验拦截，勿停留在有注册表回归的 0.7.2。 |
-| `0.2.0-rc.1` | `0.7.0` | 0.7.1 起不再支持 rc.1，请停留本版。 |
-| `0.1.5` – `0.1.7` | `0.6.5` | 旧内核最终版；0.7.0 起仅面向 0.2.0。 |
-| `0.1.2-rc.1` | `0.3.1` | 更早旧线，仅历史维护。 |
-| `0.1.1-rc.2` | `0.2.6` | 更早旧线，仅历史维护。 |
+| `0.2.1-rc.2` | `0.8.0`（本仓库 main 或 tag） | 当前唯一持续维护的内核线；`0.2.0-rc.2` 与它不同，请核对 App 内置版本。 |
+| `0.2.1-rc.1` | 上游 npm `0.7.7` | 内核升级到 `@earendil-works/pi-ai` 1.3.0，插件同步自带 1.3.0，历史遗留的 0.87.1 overrides 必须移除（见下方 pi-ai 说明）。 |
+| `0.2.0-rc.2` | 上游 npm `0.7.6` | 上一代内核线；修复企业账号模型目录缺项与国际版对话被渠道校验拦截，勿停留在有注册表回归的 0.7.2。 |
+| `0.2.0-rc.1` | 上游 npm `0.7.0` | 0.7.1 起不再支持 rc.1，请停留本版。 |
+| `0.1.5` – `0.1.7` | 上游 npm `0.6.5` | 旧内核最终版；0.7.0 起仅面向 0.2.0。 |
+| `0.1.2-rc.1` | 上游 npm `0.3.1` | 更早旧线，仅历史维护。 |
+| `0.1.1-rc.2` | 上游 npm `0.2.6` | 更早旧线，仅历史维护。 |
 
-历次更新（完整记录见 [releases](https://github.com/corrinehu/dsh-workbuddy-connect/releases)）：
+本仓库更新记录（完整记录见 [releases](https://github.com/longge1213812138/dsh-workbuddy-connect/releases)）：
 
-- **0.7.9**：恢复 DSH 0.2.1-rc.2 上国际版最大上下文窗口开关，修复延迟初始化及设置持久化（PR [#172](https://github.com/corrinehu/dsh-workbuddy-connect/pull/172)，by @1Dreamer666）；避免本地服务绑定到 fetch 禁用端口导致国际版 502（PR [#164](https://github.com/corrinehu/dsh-workbuddy-connect/pull/164)，by @Xiong-Ziyi）；同名积分包合并展示，减少重复条目。
-- **0.7.8**：适配 DSH 0.2.1-rc.2；将官方原子写入工具打包到插件，避免依赖宿主暴露该模块；更新国内模型目录快照，区分 Hy3 / Hy3-X；优化推理检测结果展示，调整积分刷新按钮位置并修正悬停提示。感谢 @chenpiyanghappy 的 PR [#156](https://github.com/corrinehu/dsh-workbuddy-connect/pull/156)。
-- **0.7.7**：适配 DSH 0.2.1-rc.1 内核：peer 收窄到 0.2.1-rc.1，插件自带的 `@earendil-works/pi-ai` 随内核升级到 1.3.0（profile 级历史遗留的 0.87.1 overrides 必须移除，否则插件无法加载）；修复国际版与国内版推理档位检测停留「检测未完成」——上游把档位拒绝码改拼为 `invalid_parameter_value`（[#143](https://github.com/corrinehu/dsh-workbuddy-connect/issues/143) / [#148](https://github.com/corrinehu/dsh-workbuddy-connect/issues/148)，PR [#145](https://github.com/corrinehu/dsh-workbuddy-connect/pull/145)）；修复中文 Windows 控制台下注册表缺键诊断因 GBK 编码被误判（zh-CN 实机验证）。
-- **0.7.6**：修复企业账号模型目录缺少 `glm-5.3-flashx`（[#123](https://github.com/corrinehu/dsh-workbuddy-connect/issues/123)），修复国际版对话请求被上游渠道校验拦截（[#139](https://github.com/corrinehu/dsh-workbuddy-connect/issues/139) / [#142](https://github.com/corrinehu/dsh-workbuddy-connect/issues/142)）。
-- **0.7.5**：修复切换会话后输入框余额与刷新按钮消失（[#125](https://github.com/corrinehu/dsh-workbuddy-connect/issues/125) / [#132](https://github.com/corrinehu/dsh-workbuddy-connect/issues/132)），修复 WSL 调用 Windows 凭据解密程序的环境转发（[#133](https://github.com/corrinehu/dsh-workbuddy-connect/issues/133)），README 收录社区项目（[#130](https://github.com/corrinehu/dsh-workbuddy-connect/issues/130)）。
-- **0.7.4**：Windows 诊断与稳定性改进：注册表子进程输出超限准确分类、跨平台测试假设修正（[#62](https://github.com/corrinehu/dsh-workbuddy-connect/issues/62)），安装说明重排。
-- **0.7.3**：修复 Windows 非默认安装路径下注册表自动发现失败（[#105](https://github.com/corrinehu/dsh-workbuddy-connect/issues/105)）。
-- **0.7.2**：pi-ai 改为插件自带依赖，并修复推理字段请求被拒（[#92](https://github.com/corrinehu/dsh-workbuddy-connect/issues/92)）；该版存在 Windows 注册表回归，请使用 0.7.4 或更新的正式版本。
-- **0.7.1**：收窄 pi-ai 依赖范围。
-- **0.7.0**：适配 DSH 0.2.0 的设置服务改造，不再支持 0.1.x。
-- **0.6.5**：0.1.x 线最终版本。
+- **0.8.0**：接手维护；更新仓库地址、包元数据、README 安装与维护说明，并把更新检查指向本仓库；代码行为与 0.7.9 保持一致，适配 DSH 0.2.1-rc.2。
+- **0.7.9**（上游）：恢复 DSH 0.2.1-rc.2 上国际版最大上下文窗口开关，修复延迟初始化及设置持久化（PR [#172](https://github.com/corrinehu/dsh-workbuddy-connect/pull/172)，by @1Dreamer666）；避免本地服务绑定到 fetch 禁用端口导致国际版 502（PR [#164](https://github.com/corrinehu/dsh-workbuddy-connect/pull/164)，by @Xiong-Ziyi）；同名积分包合并展示，减少重复条目。
+- **0.7.8**（上游）：适配 DSH 0.2.1-rc.2；将官方原子写入工具打包到插件，避免依赖宿主暴露该模块；更新国内模型目录快照，区分 Hy3 / Hy3-X；优化推理检测结果展示，调整积分刷新按钮位置并修正悬停提示。感谢 @chenpiyanghappy 的 PR [#156](https://github.com/corrinehu/dsh-workbuddy-connect/pull/156)。
+- **0.7.7**（上游）：适配 DSH 0.2.1-rc.1 内核：peer 收窄到 0.2.1-rc.1，插件自带的 `@earendil-works/pi-ai` 随内核升级到 1.3.0（profile 级历史遗留的 0.87.1 overrides 必须移除，否则插件无法加载）；修复国际版与国内版推理档位检测停留「检测未完成」——上游把档位拒绝码改拼为 `invalid_parameter_value`（[#143](https://github.com/corrinehu/dsh-workbuddy-connect/issues/143) / [#148](https://github.com/corrinehu/dsh-workbuddy-connect/issues/148)，PR [#145](https://github.com/corrinehu/dsh-workbuddy-connect/pull/145)）；修复中文 Windows 控制台下注册表缺键诊断因 GBK 编码被误判（zh-CN 实机验证）。
+- **0.7.6**（上游）：修复企业账号模型目录缺少 `glm-5.3-flashx`（[#123](https://github.com/corrinehu/dsh-workbuddy-connect/issues/123)），修复国际版对话请求被上游渠道校验拦截（[#139](https://github.com/corrinehu/dsh-workbuddy-connect/issues/139) / [#142](https://github.com/corrinehu/dsh-workbuddy-connect/issues/142)）。
+- **0.7.5**（上游）：修复切换会话后输入框余额与刷新按钮消失（[#125](https://github.com/corrinehu/dsh-workbuddy-connect/issues/125) / [#132](https://github.com/corrinehu/dsh-workbuddy-connect/issues/132)），修复 WSL 调用 Windows 凭据解密程序的环境转发（[#133](https://github.com/corrinehu/dsh-workbuddy-connect/issues/133)），README 收录社区项目（[#130](https://github.com/corrinehu/dsh-workbuddy-connect/issues/130)）。
+- **0.7.4**（上游）：Windows 诊断与稳定性改进：注册表子进程输出超限准确分类、跨平台测试假设修正（[#62](https://github.com/corrinehu/dsh-workbuddy-connect/issues/62)），安装说明重排。
+- **0.7.3**（上游）：修复 Windows 非默认安装路径下注册表自动发现失败（[#105](https://github.com/corrinehu/dsh-workbuddy-connect/issues/105)）。
+- **0.7.2**（上游）：pi-ai 改为插件自带依赖，并修复推理字段请求被拒（[#92](https://github.com/corrinehu/dsh-workbuddy-connect/issues/92)）；该版存在 Windows 注册表回归，请使用 0.7.4 或更新的正式版本。
+- **0.7.1**（上游）：收窄 pi-ai 依赖范围。
+- **0.7.0**（上游）：适配 DSH 0.2.0 的设置服务改造，不再支持 0.1.x。
+- **0.6.5**（上游）：0.1.x 线最终版本。
 
-固定版本安装示例：`dsh plugin --profile web add dsh-workbuddy-connect@0.7.9`。
+固定版本安装示例（本仓库 tag）：
 
-**pi-ai 版本按内核线区分，不能混**：0.2.1-rc.1 / rc.2 内核线（分别对应插件 0.7.7 / 0.7.8–0.7.9）已升级到 `@earendil-works/pi-ai` 1.3.0（由插件自带），profile 级历史遗留的 `overrides: {'@earendil-works/pi-ai': '0.87.1'}` **必须移除**，否则插件会因加载到旧一代 pi-ai 而启动失败；0.2.0-rc.2 内核线（插件 0.7.6）仍要求 `^0.87.1`，在这条线上**不要**把 profile 级的 pi-ai 升到 1.x，第三方插件管理器的「可更新」提示不校验 peer 约束、不能照做（[#86](https://github.com/corrinehu/dsh-workbuddy-connect/issues/86)）。
+```sh
+dsh plugin --profile web add github:longge1213812138/dsh-workbuddy-connect#v0.8.0
+```
+
+**pi-ai 版本按内核线区分，不能混**：0.2.1-rc.1 / rc.2 内核线（上游 0.7.7 / 0.7.8–0.7.9，本仓库 0.8.0）已升级到 `@earendil-works/pi-ai` 1.3.0（由插件自带），profile 级历史遗留的 `overrides: {'@earendil-works/pi-ai': '0.87.1'}` **必须移除**，否则插件会因加载到旧一代 pi-ai 而启动失败；0.2.0-rc.2 内核线（插件 0.7.6）仍要求 `^0.87.1`，在这条线上**不要**把 profile 级的 pi-ai 升到 1.x，第三方插件管理器的「可更新」提示不校验 peer 约束、不能照做（[#86](https://github.com/corrinehu/dsh-workbuddy-connect/issues/86)）。
 
 ## 免责声明
 
@@ -191,6 +237,7 @@ llm-workbuddy:
 - 请充分了解上述风险，并自行决定是否安装和使用。因使用本项目产生的账号限制、额度损失、服务中断等后果，由使用者自行承担；如不能接受，请使用官方客户端。
 - 本项目不保证服务持续可用、账号不受限制或积分展示始终准确。开发者无法控制平台的限制、处罚或服务调整。
 - 本项目作者不对任何因使用或滥用本项目产生的直接或间接损失负责。
+- 本仓库是第三方社区维护分支，原作者 corrinehu 已停止维护上游项目，不对本分支的改动、发布或支持负责；本分支维护者也不对上游的接口变更或限制负责。
 
 ## 相关项目 / 社区生态
 
@@ -201,9 +248,10 @@ llm-workbuddy:
 
 ## 致谢
 
+- [corrinehu/dsh-workbuddy-connect](https://github.com/corrinehu/dsh-workbuddy-connect) — 原始项目与 0.7.9 之前的全部实现；感谢原作者 @corrinehu 及所有上游贡献者。
 - [Sliverkiss/workbuddy2api](https://github.com/Sliverkiss/workbuddy2api)（MIT）— WorkBuddy 上游协议的参照实现。
 - [franksong2702/dsh-codex-connect](https://github.com/franksong2702/dsh-codex-connect)（Apache-2.0）— DSH 插件结构与 provider 注册的参照。
 
 ## 许可证
 
-[MIT](./LICENSE)
+[MIT](./LICENSE)。原始版权归 Corrine Hu；本分支的修改版权归其各自作者。

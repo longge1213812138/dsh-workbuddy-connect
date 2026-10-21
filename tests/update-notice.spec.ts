@@ -26,7 +26,7 @@ function baseSnapshot(): WorkBuddyUpdateSnapshot {
     status: 'update-available',
     currentVersion: '0.6.1',
     latestVersion: '0.6.4',
-    releaseUrl: 'https://github.com/corrinehu/dsh-workbuddy-connect/releases/tag/v0.6.4',
+    releaseUrl: 'https://github.com/longge1213812138/dsh-workbuddy-connect/releases/tag/v0.6.4',
     versionsBehind: 1,
     releases: [{ version: 'v0.6.4', name: 'v0.6.4 summary' }],
   }
