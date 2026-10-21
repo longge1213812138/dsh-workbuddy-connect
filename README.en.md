@@ -24,7 +24,7 @@ Brings the models available in your signed-in WorkBuddy / WorkBuddy AI desktop a
 Please install and verify the DSH (DeepSeek Harness) plugin dsh-workbuddy-connect for me. Source repository: https://github.com/longge1213812138/dsh-workbuddy-connect
 Start by reading the repository README and confirming which interface I actually use (Web / Desktop / TUI) and its DSH core version; for the Desktop app use the bundled core, never the standalone CLI's version.
 The current main line only supports DSH 0.2.1-rc.2. When the versions match, install from my GitHub repository source, not from the old same-name npm package:
-  dsh plugin --profile web add github:longge1213812138/dsh-workbuddy-connect
+  dsh plugin --profile web add --config.strict-dep-builds=false github:longge1213812138/dsh-workbuddy-connect
 For TUI on a 0.2.1-rc.2 core, use the same source install; if my core is older, tell me first and do not force-install main on it.
 A Desktop profile may be app-managed: confirm which distribution I use, then explore its compliant install route; never bypass its validation.
 Ask for my consent and make backups before changing any local files or configuration.
@@ -47,11 +47,11 @@ Core-to-source quick reference (full table at the end):
 
 ```sh
 # Web: install from this repository source (current main line, DSH 0.2.1-rc.2)
-dsh plugin --profile web add github:longge1213812138/dsh-workbuddy-connect
+dsh plugin --profile web add --config.strict-dep-builds=false github:longge1213812138/dsh-workbuddy-connect
 dsh web
 
 # Or pin a release tag (recommended for production)
-dsh plugin --profile web add github:longge1213812138/dsh-workbuddy-connect#v0.8.0
+dsh plugin --profile web add --config.strict-dep-builds=false github:longge1213812138/dsh-workbuddy-connect#v0.8.0
 
 # TUI: on 0.2.1-rc.2 use the source install above; older cores use the upstream npm version from the table
 dsh plugin --profile dsh-tui add dsh-workbuddy-connect@0.6.5
@@ -59,6 +59,8 @@ dsh --profile dsh-tui
 ```
 
 </details>
+
+> **If install reports `ERR_PNPM_IGNORED_BUILDS`**: DSH's pnpm 11 treats the blocked build scripts of `@google/genai` and `protobufjs` as an error. The plugin's `lib/` is prebuilt and does not need them; the commands above pass `--config.strict-dep-builds=false`, which downgrades that block from an error to a warning. If it still fails, send the `pnpm.log` to your Agent — do not run `pnpm approve-builds` or modify dependency packages.
 
 > **TUI version pairing**: the terminal shell `@deepseek-harness-tui/dsh-tui` must be 0.10.0-beta.5 or newer — older versions fail at startup with this plugin installed (`events is not iterable`); manual reasoning-level detection exists on Web / Desktop only, not TUI.
 
@@ -223,7 +225,7 @@ Release history (full records at [releases](https://github.com/longge1213812138/
 Pinned-version install example (this repo's tag):
 
 ```sh
-dsh plugin --profile web add github:longge1213812138/dsh-workbuddy-connect#v0.8.0
+dsh plugin --profile web add --config.strict-dep-builds=false github:longge1213812138/dsh-workbuddy-connect#v0.8.0
 ```
 
 **pi-ai versions are per core line and must not be mixed**: the 0.2.1-rc.1 / rc.2 core lines (upstream 0.7.7 / 0.7.8–0.7.9, this fork 0.8.0) moved to `@earendil-works/pi-ai` 1.3.0 (bundled by the plugin), so a profile-level leftover `overrides: {'@earendil-works/pi-ai': '0.87.1'}` **must be removed** or the plugin fails to load; the 0.2.0-rc.2 core line (plugin 0.7.6) still requires `^0.87.1` — on that line, **do not** upgrade the profile-level pi-ai to 1.x, and do not act on third-party plugin managers' "updatable" prompts, which do not check peer constraints ([#86](https://github.com/corrinehu/dsh-workbuddy-connect/issues/86)).

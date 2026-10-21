@@ -24,7 +24,7 @@
 请帮我安装并验证 DSH（DeepSeek Harness）插件 dsh-workbuddy-connect，源码仓库：https://github.com/longge1213812138/dsh-workbuddy-connect
 先阅读仓库 README，确认我实际使用的界面（Web / Desktop / TUI）与 DSH 内核版本；桌面版以 App 内置核心为准，不要用独立 CLI 的版本代替。
 本仓库当前主线只适配 DSH 0.2.1-rc.2。版本匹配时，从我的 GitHub 仓库源码安装，不要安装 npm 上同名的旧包：
-  dsh plugin --profile web add github:longge1213812138/dsh-workbuddy-connect
+  dsh plugin --profile web add --config.strict-dep-builds=false github:longge1213812138/dsh-workbuddy-connect
 如果内核是 0.2.1-rc.2，TUI 也用上面的源码安装；如果内核更旧，先告诉我，不要强行把 main 装到旧内核。
 Desktop 的 profile 可能由 App 管理；先确认我所用的发行版，再探查其合规安装方式，不要绕过它的校验。
 任何本地文件或配置改动，先征得我同意并做好备份。
@@ -47,11 +47,11 @@ Desktop 的 profile 可能由 App 管理；先确认我所用的发行版，再�
 
 ```sh
 # Web：从本仓库源码安装（当前主线，DSH 0.2.1-rc.2）
-dsh plugin --profile web add github:longge1213812138/dsh-workbuddy-connect
+dsh plugin --profile web add --config.strict-dep-builds=false github:longge1213812138/dsh-workbuddy-connect
 dsh web
 
 # 或固定到某个发布 tag（推荐生产使用）
-dsh plugin --profile web add github:longge1213812138/dsh-workbuddy-connect#v0.8.0
+dsh plugin --profile web add --config.strict-dep-builds=false github:longge1213812138/dsh-workbuddy-connect#v0.8.0
 
 # TUI：0.2.1-rc.2 内核用上面的源码安装；更旧内核按上表安装上游 npm 历史版本
 dsh plugin --profile dsh-tui add dsh-workbuddy-connect@0.6.5
@@ -59,6 +59,8 @@ dsh --profile dsh-tui
 ```
 
 </details>
+
+> **安装报 `ERR_PNPM_IGNORED_BUILDS`**：DSH 的 pnpm 11 会把 `@google/genai`、`protobufjs` 的构建脚本拦截视为错误。插件 `lib/` 已预构建，不依赖这些脚本；上面的命令已加 `--config.strict-dep-builds=false`，把该拦截从错误降为警告。若仍失败，把 `pnpm.log` 贴给 Agent，不要用 `pnpm approve-builds` 或修改依赖包。
 
 > **TUI 版本搭配**：终端壳 `@deepseek-harness-tui/dsh-tui` 需 0.10.0-beta.5 及以上，更早版本装本插件会启动失败（`events is not iterable`）；推理档位的手动检测仅 Web / Desktop 提供，TUI 没有。
 
@@ -224,7 +226,7 @@ llm-workbuddy:
 固定版本安装示例（本仓库 tag）：
 
 ```sh
-dsh plugin --profile web add github:longge1213812138/dsh-workbuddy-connect#v0.8.0
+dsh plugin --profile web add --config.strict-dep-builds=false github:longge1213812138/dsh-workbuddy-connect#v0.8.0
 ```
 
 **pi-ai 版本按内核线区分，不能混**：0.2.1-rc.1 / rc.2 内核线（上游 0.7.7 / 0.7.8–0.7.9，本仓库 0.8.0）已升级到 `@earendil-works/pi-ai` 1.3.0（由插件自带），profile 级历史遗留的 `overrides: {'@earendil-works/pi-ai': '0.87.1'}` **必须移除**，否则插件会因加载到旧一代 pi-ai 而启动失败；0.2.0-rc.2 内核线（插件 0.7.6）仍要求 `^0.87.1`，在这条线上**不要**把 profile 级的 pi-ai 升到 1.x，第三方插件管理器的「可更新」提示不校验 peer 约束、不能照做（[#86](https://github.com/corrinehu/dsh-workbuddy-connect/issues/86)）。
