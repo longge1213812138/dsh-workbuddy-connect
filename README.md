@@ -36,7 +36,7 @@ Desktop 的 profile 可能由 App 管理；先确认我所用的发行版，再�
 
 | DSH 内核 | 安装来源 |
 |---|---|
-| `0.2.1-rc.2` | 本仓库 `main`（0.8.0） |
+| `0.2.1-rc.2` | 本仓库 `main`（0.8.1） |
 | `0.2.1-rc.1` | 上游 npm `dsh-workbuddy-connect@0.7.7` |
 | `0.2.0-rc.2` | 上游 npm `dsh-workbuddy-connect@0.7.6` |
 | `0.2.0-rc.1` | 上游 npm `dsh-workbuddy-connect@0.7.0` |
@@ -51,7 +51,7 @@ dsh plugin --profile web add --config.strict-dep-builds=false github:longge12138
 dsh web
 
 # 或固定到某个发布 tag（推荐生产使用）
-dsh plugin --profile web add --config.strict-dep-builds=false github:longge1213812138/dsh-workbuddy-connect#v0.8.0
+dsh plugin --profile web add --config.strict-dep-builds=false github:longge1213812138/dsh-workbuddy-connect#v0.8.1
 
 # TUI：0.2.1-rc.2 内核用上面的源码安装；更旧内核按上表安装上游 npm 历史版本
 dsh plugin --profile dsh-tui add dsh-workbuddy-connect@0.6.5
@@ -192,6 +192,7 @@ llm-workbuddy:
 - **无凭据时的行为变化**：某版 App 从未登录、也没留下插件自留副本时，该版模型分组不再显示。此前国内版会显示一份内置兜底列表，但那些模型选了必然报错。
 - **企业账号积分目前仅覆盖国内版**：国际版企业账号的计费接口尚未验证，仍按个人版接口读取；待有实测结论后再扩展。企业账号分支在本机无法自测（开发机为个人账号），依据官方 App 的接口契约实现，欢迎企业账号用户反馈实测结果。
 - **设置入口随 DSH 版本而异**：旧版设置服务使用 `installSection`，新版使用 SettingsForms。0.7.9 在 DSH 0.2.1-rc.2 上恢复国际版「使用上游声明的最大上下文窗口」开关，默认开启；关闭后使用上游默认窗口，设置在重启后保留。只有本插件的可写设置入口就绪后才显示开关，等待期间仍使用默认的最大窗口。
+- **上游可能按系统提示词识别客户端身份**：若系统提示词中出现明确的 DSH / DeepSeek Harness 身份字样，WorkBuddy 可能直接返回 400；这是上游的接入限制，不是安装问题。本分支不通过改写、拆分或隐藏系统提示词来规避该限制；遇到时请使用官方客户端。
 - 依赖 WorkBuddy 客户端接口（非官方开放 API），WorkBuddy 更新后插件可能需要随之调整。
 
 ## 版本兼容与历史版本
@@ -200,7 +201,7 @@ llm-workbuddy:
 
 | DSH 内核 | 推荐版本 / 来源 | 注意事项 |
 |---|---|---|
-| `0.2.1-rc.2` | `0.8.0`（本仓库 main 或 tag） | 当前唯一持续维护的内核线；`0.2.0-rc.2` 与它不同，请核对 App 内置版本。 |
+| `0.2.1-rc.2` | `0.8.1`（本仓库 main 或 tag） | 当前唯一持续维护的内核线；`0.2.0-rc.2` 与它不同，请核对 App 内置版本。 |
 | `0.2.1-rc.1` | 上游 npm `0.7.7` | 内核升级到 `@earendil-works/pi-ai` 1.3.0，插件同步自带 1.3.0，历史遗留的 0.87.1 overrides 必须移除（见下方 pi-ai 说明）。 |
 | `0.2.0-rc.2` | 上游 npm `0.7.6` | 上一代内核线；修复企业账号模型目录缺项与国际版对话被渠道校验拦截，勿停留在有注册表回归的 0.7.2。 |
 | `0.2.0-rc.1` | 上游 npm `0.7.0` | 0.7.1 起不再支持 rc.1，请停留本版。 |
@@ -210,6 +211,7 @@ llm-workbuddy:
 
 本仓库更新记录（完整记录见 [releases](https://github.com/longge1213812138/dsh-workbuddy-connect/releases)）：
 
+- **0.8.1**：修复 `dsh plugin --profile <name> exec dsh-workbuddy-connect status` 在全新 profile 下因缺少 `@deepseek-ai/dsh-home-paths` 而报 `ERR_MODULE_NOT_FOUND`；将该模块加入插件依赖。安装与宿主加载行为不变，适配 DSH 0.2.1-rc.2。
 - **0.8.0**：接手维护；更新仓库地址、包元数据、README 安装与维护说明，并把更新检查指向本仓库；代码行为与 0.7.9 保持一致，适配 DSH 0.2.1-rc.2。
 - **0.7.9**（上游）：恢复 DSH 0.2.1-rc.2 上国际版最大上下文窗口开关，修复延迟初始化及设置持久化（PR [#172](https://github.com/corrinehu/dsh-workbuddy-connect/pull/172)，by @1Dreamer666）；避免本地服务绑定到 fetch 禁用端口导致国际版 502（PR [#164](https://github.com/corrinehu/dsh-workbuddy-connect/pull/164)，by @Xiong-Ziyi）；同名积分包合并展示，减少重复条目。
 - **0.7.8**（上游）：适配 DSH 0.2.1-rc.2；将官方原子写入工具打包到插件，避免依赖宿主暴露该模块；更新国内模型目录快照，区分 Hy3 / Hy3-X；优化推理检测结果展示，调整积分刷新按钮位置并修正悬停提示。感谢 @chenpiyanghappy 的 PR [#156](https://github.com/corrinehu/dsh-workbuddy-connect/pull/156)。
@@ -226,10 +228,10 @@ llm-workbuddy:
 固定版本安装示例（本仓库 tag）：
 
 ```sh
-dsh plugin --profile web add --config.strict-dep-builds=false github:longge1213812138/dsh-workbuddy-connect#v0.8.0
+dsh plugin --profile web add --config.strict-dep-builds=false github:longge1213812138/dsh-workbuddy-connect#v0.8.1
 ```
 
-**pi-ai 版本按内核线区分，不能混**：0.2.1-rc.1 / rc.2 内核线（上游 0.7.7 / 0.7.8–0.7.9，本仓库 0.8.0）已升级到 `@earendil-works/pi-ai` 1.3.0（由插件自带），profile 级历史遗留的 `overrides: {'@earendil-works/pi-ai': '0.87.1'}` **必须移除**，否则插件会因加载到旧一代 pi-ai 而启动失败；0.2.0-rc.2 内核线（插件 0.7.6）仍要求 `^0.87.1`，在这条线上**不要**把 profile 级的 pi-ai 升到 1.x，第三方插件管理器的「可更新」提示不校验 peer 约束、不能照做（[#86](https://github.com/corrinehu/dsh-workbuddy-connect/issues/86)）。
+**pi-ai 版本按内核线区分，不能混**：0.2.1-rc.1 / rc.2 内核线（上游 0.7.7 / 0.7.8–0.7.9，本仓库 0.8.1）已升级到 `@earendil-works/pi-ai` 1.3.0（由插件自带），profile 级历史遗留的 `overrides: {'@earendil-works/pi-ai': '0.87.1'}` **必须移除**，否则插件会因加载到旧一代 pi-ai 而启动失败；0.2.0-rc.2 内核线（插件 0.7.6）仍要求 `^0.87.1`，在这条线上**不要**把 profile 级的 pi-ai 升到 1.x，第三方插件管理器的「可更新」提示不校验 peer 约束、不能照做（[#86](https://github.com/corrinehu/dsh-workbuddy-connect/issues/86)）。
 
 ## 免责声明
 
