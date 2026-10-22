@@ -2,6 +2,15 @@
 
 English | [中文](./README.md)
 
+> [!WARNING]
+> **After installation the plugin cannot be used directly: chat requests are rejected by the WorkBuddy upstream with HTTP 400.**
+>
+> This is an **upstream restriction on unofficial clients** (identity / system-prompt based), **not an installation, packaging, or configuration problem of this plugin**. The plugin may install, show its model group, and report a valid sign-in, yet an actual chat request can still return 400.
+>
+> This repository **does not provide a bypass**. Users must resolve the restriction themselves or **wait for updates in the author's other repositories**; until then, do not treat a 400 as a failed install and reinstall repeatedly.
+>
+> The official WorkBuddy client remains the safest option.
+
 ## About this repository
 
 This is a community-maintained fork of `dsh-workbuddy-connect`, taken over by [longge1213812138](https://github.com/longge1213812138) and based on the original author [corrinehu](https://github.com/corrinehu)'s v0.7.9 (MIT). The upstream repository has announced that it is no longer maintained; this fork keeps the full history, license, and contributor attribution.
