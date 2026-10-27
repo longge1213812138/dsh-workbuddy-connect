@@ -62,6 +62,33 @@ describe('package version sync', () => {
   })
 })
 
+describe('the dsh manifest declares the verified cores', () => {
+  /**
+   * `engines.dsh` is what DSH 0.2.1-rc.2 and newer actually read: both
+   * `@deepseek-ai/dsh-app-boot` versions run `evaluatePluginCompatibility()`
+   * over it, and once the field exists the peer list is ignored entirely.
+   * Before 0.8.2 it did not exist, so a *pinned* service peer
+   * (`"0.2.1-rc.2"`) was the only requirement the runtime saw — and an exact
+   * version never matches another prerelease, so upgrading the core to
+   * `0.2.1-rc.3` rejected the plugin with `incompatible-version` until the
+   * person granted an exemption (issue: rc.3 showed the plugin as broken).
+   *
+   * The list stays an explicit allowlist instead of a caret: #69 was a caret
+   * on a prerelease arm silently admitting untested later rcs, and
+   * `^0.2.1-rc.2` still matches `0.2.2-rc.1` and `0.2.1` today. Every
+   * candidate therefore has to be added here by hand after a real run.
+   */
+  it('declares engines.dsh as an explicit allowlist of the tested cores', () => {
+    const pkg = JSON.parse(
+      readFileSync(new URL('../package.json', import.meta.url), 'utf8'),
+    ) as { engines?: { dsh?: string } }
+    expect(
+      pkg.engines?.dsh,
+      'engines.dsh is what the DSH runtime evaluates; without it the pinned peers decide and any core bump is rejected',
+    ).toBe('0.2.1-rc.2 || 0.2.1-rc.3')
+  })
+})
+
 describe('peer manifest pins the verified DSH cores', () => {
   /**
    * #69's lesson: a caret on a prerelease arm (`^0.2.0-rc.1`) silently

@@ -25,16 +25,16 @@ Brings the models available in your signed-in WorkBuddy / WorkBuddy AI desktop a
 
 **Prerequisite**: the WorkBuddy (CN) or WorkBuddy AI desktop app is installed and signed in on this machine. The plugin reuses the app's sign-in state and follows account switches automatically; the two never affect each other.
 
-**The current main line targets DSH `0.2.1-rc.2`.** For other cores, check "Compatibility and release history" at the end first; do not force-install main on an older core.
+**The current main line targets DSH `0.2.1-rc.2` and `0.2.1-rc.3`.** For other cores, check "Compatibility and release history" at the end first; do not force-install main on an unverified core.
 
 **Recommended: let an Agent you already have do the install** — any assistant with terminal and file access (the DSH agent, Codex, Claude Code, Cursor, …). Paste this to it verbatim:
 
 ```text
 Please install and verify the DSH (DeepSeek Harness) plugin dsh-workbuddy-connect for me. Source repository: https://github.com/longge1213812138/dsh-workbuddy-connect
 Start by reading the repository README and confirming which interface I actually use (Web / Desktop / TUI) and its DSH core version; for the Desktop app use the bundled core, never the standalone CLI's version.
-The current main line only supports DSH 0.2.1-rc.2. When the versions match, install from my GitHub repository source, not from the old same-name npm package:
+The current main line only supports DSH 0.2.1-rc.2 and 0.2.1-rc.3. When the versions match, install from my GitHub repository source, not from the old same-name npm package:
   dsh plugin --profile web add --config.strict-dep-builds=false github:longge1213812138/dsh-workbuddy-connect
-For TUI on a 0.2.1-rc.2 core, use the same source install; if my core is older, tell me first and do not force-install main on it.
+For TUI on a 0.2.1-rc.2 or 0.2.1-rc.3 core, use the same source install; if my core is older or newer, tell me first and do not force-install main on it.
 A Desktop profile may be app-managed: confirm which distribution I use, then explore its compliant install route; never bypass its validation.
 Ask for my consent and make backups before changing any local files or configuration.
 After installing, verify the WorkBuddy group appears in the model picker and walk me through one short conversation.
@@ -45,7 +45,8 @@ Core-to-source quick reference (full table at the end):
 
 | DSH core | Source |
 |---|---|
-| `0.2.1-rc.2` | this repo's `main` (0.8.1) |
+| `0.2.1-rc.3` | this repo's `main` (0.8.2) |
+| `0.2.1-rc.2` | this repo's `main` (0.8.2) |
 | `0.2.1-rc.1` | upstream npm `dsh-workbuddy-connect@0.7.7` |
 | `0.2.0-rc.2` | upstream npm `dsh-workbuddy-connect@0.7.6` |
 | `0.2.0-rc.1` | upstream npm `dsh-workbuddy-connect@0.7.0` |
@@ -55,14 +56,14 @@ Core-to-source quick reference (full table at the end):
 <summary>Manual install (command line, Web / TUI only)</summary>
 
 ```sh
-# Web: install from this repository source (current main line, DSH 0.2.1-rc.2)
+# Web: install from this repository source (current main line, DSH 0.2.1-rc.2 / rc.3)
 dsh plugin --profile web add --config.strict-dep-builds=false github:longge1213812138/dsh-workbuddy-connect
 dsh web
 
 # Or pin a release tag (recommended for production)
-dsh plugin --profile web add --config.strict-dep-builds=false github:longge1213812138/dsh-workbuddy-connect#v0.8.1
+dsh plugin --profile web add --config.strict-dep-builds=false github:longge1213812138/dsh-workbuddy-connect#v0.8.2
 
-# TUI: on 0.2.1-rc.2 use the source install above; older cores use the upstream npm version from the table
+# TUI: on 0.2.1-rc.2 / rc.3 use the source install above; older or newer cores use the version listed in the table
 dsh plugin --profile dsh-tui add dsh-workbuddy-connect@0.6.5
 dsh --profile dsh-tui
 ```
@@ -85,7 +86,7 @@ Use this section for future maintenance. When you need a bug fix, a new core com
 You are the maintainer Agent for the dsh-workbuddy-connect fork at https://github.com/longge1213812138/dsh-workbuddy-connect. Start by reading README.md, package.json, cordis.patch.yml, and src/update.ts, and confirm the local DSH core version with dsh --version (for the Desktop app, use the bundled core).
 Rules:
 1. Install dependencies and run the full check first: npx pnpm@10 install --frozen-lockfile && npx pnpm@10 run check. Every change must pass typecheck, test, and build; never "fix" by deleting tests or weakening assertions.
-2. peerDependencies must match the target DSH core exactly (currently 0.2.1-rc.2). When upgrading the core, update package.json peer/dev versions, pnpm-lock.yaml, and THIRD_PARTY_NOTICES.txt when relevant.
+2. Compatibility is declared in package.json's engines.dsh (currently 0.2.1-rc.2 || 0.2.1-rc.3): once the DSH runtime's compatibility preflight sees engines.dsh it reads only that and ignores peerDependencies entirely. Keep it an explicit allowlist extended by hand, never a caret that widens support by itself; append a core only after a real run and update the assertion in tests/version.spec.ts with it. Upgrading the core also means updating the peer/dev versions, pnpm-lock.yaml, and THIRD_PARTY_NOTICES.txt when relevant.
 3. After changing src, rebuild lib and commit it too; GitHub source installs load lib, so src alone is not enough.
 4. Follow SemVer: patch for bug fixes, minor for features, major for breaking changes; update the compatibility table and release history in README at the same time.
 5. Never bypass WorkBuddy's official checks or restrictions, spoof headers, certificates, or client identity; if an upstream restriction makes a fix impossible, record it honestly under Known limitations.
@@ -108,7 +109,7 @@ git push origin main
 
 Scope:
 
-- This fork only guarantees the core version pinned by `package.json` peer dependencies; use the historical versions in the table for other cores.
+- This fork only guarantees the cores listed in `package.json`'s `engines.dsh`; use the historical versions in the table for other cores, or smoke-test a core first and then append it to that allowlist.
 - Changes that bypass WorkBuddy client checks, crack credit, or spoof identity are not accepted.
 - If a private upstream API change cannot be fixed, keep the failure reason and log locations, and update Known limitations in README.
 
@@ -205,11 +206,14 @@ llm-workbuddy:
 
 ## Compatibility and release history
 
-The plugin version must match the DSH core — a mismatched combination fails to start DSH — and the Desktop app picks its plugin version by the bundled core. This fork has been maintained since 0.8.0 and currently targets `0.2.1-rc.2` only. For older cores, use the upstream npm historical versions; do not install this repo's main on them.
+The plugin version must match the DSH core — a mismatched combination fails to start DSH — and the Desktop app picks its plugin version by the bundled core. This fork has been maintained since 0.8.0 and currently targets `0.2.1-rc.2` and `0.2.1-rc.3`. For older cores, use the upstream npm historical versions; do not install this repo's main on them.
+
+Compatibility is declared by `package.json`'s `engines.dsh` (`0.2.1-rc.2 || 0.2.1-rc.3`): as soon as DSH's compatibility preflight finds that field it judges by it alone and ignores `peerDependencies`. 0.8.1 and earlier had no such field, so the only requirement the runtime saw was the pinned peer (`0.2.1-rc.2`) — an exact version never matches another prerelease, so a core upgrade to rc.3 reported the plugin as `incompatible-version` until the person granted an exemption. 0.8.2 removes that step. Every future core still has to be smoke-tested and appended to this allowlist by hand.
 
 | DSH core | Recommended version / source | Notes |
 |---|---|---|
-| `0.2.1-rc.2` | `0.8.1` (this repo's main or tag) | The only actively maintained core line; `0.2.0-rc.2` is different — check the core bundled in your Desktop app. |
+| `0.2.1-rc.3` | `0.8.2` (this repo's main or tag) | Current core line; listed in `engines.dsh` as verified, so no version exemption is needed. |
+| `0.2.1-rc.2` | `0.8.2` (this repo's main or tag) | The previous rc of the same core line; 0.8.1 and earlier can only judge by peers and demand an exemption on rc.3. `0.2.0-rc.2` is different — check the core bundled in your Desktop app. |
 | `0.2.1-rc.1` | upstream npm `0.7.7` | The core moved to `@earendil-works/pi-ai` 1.3.0, so the plugin bundles 1.3.0 too — a leftover 0.87.1 overrides entry must be removed (see the pi-ai note below). |
 | `0.2.0-rc.2` | upstream npm `0.7.6` | Previous core line; fixes enterprise catalog gaps and international chat requests blocked by the upstream channel check. Avoid 0.7.2 with its registry regression. |
 | `0.2.0-rc.1` | upstream npm `0.7.0` | 0.7.1 drops rc.1 support; stay on this version. |
@@ -219,6 +223,7 @@ The plugin version must match the DSH core — a mismatched combination fails to
 
 Release history (full records at [releases](https://github.com/longge1213812138/dsh-workbuddy-connect/releases)):
 
+- **0.8.2**: fixes the plugin being rejected as `incompatible-version` (and needing a manual exemption to start) on a DSH `0.2.1-rc.3` core. The cause was the manifest, not the code: `peerDependencies` pinned six DSH service packages to exactly `0.2.1-rc.2`, and without an `engines.dsh` field DSH's compatibility preflight compares those exact versions against the running core — and an exact version never matches another prerelease. This release adds `engines.dsh: "0.2.1-rc.2 || 0.2.1-rc.3"` so the preflight reads only that explicit allowlist, plus a matching regression test. The interfaces the plugin actually calls are compatible on rc.3; runtime behavior is unchanged.
 - **0.8.1**: fixes `dsh plugin --profile <name> exec dsh-workbuddy-connect status` failing with `ERR_MODULE_NOT_FOUND` in a fresh profile because `@deepseek-ai/dsh-home-paths` was missing; adds that module as a plugin dependency. Install and host-loading behavior is unchanged; targets DSH 0.2.1-rc.2.
 - **0.8.0**: maintainer takeover; updates the repository URL, package metadata, README install and maintenance instructions, and points the update checker at this repository; code behavior is unchanged from 0.7.9 and targets DSH 0.2.1-rc.2.
 - **0.7.9** (upstream): restores the international edition's maximum-context switch on DSH 0.2.1-rc.2, including delayed initialization and persistent settings (PR [#172](https://github.com/corrinehu/dsh-workbuddy-connect/pull/172), by @1Dreamer666); avoids fetch-blocked local ports that could cause international-edition 502 errors (PR [#164](https://github.com/corrinehu/dsh-workbuddy-connect/pull/164), by @Xiong-Ziyi); combines credit packages with the same name to reduce repeated entries.
@@ -236,10 +241,10 @@ Release history (full records at [releases](https://github.com/longge1213812138/
 Pinned-version install example (this repo's tag):
 
 ```sh
-dsh plugin --profile web add --config.strict-dep-builds=false github:longge1213812138/dsh-workbuddy-connect#v0.8.1
+dsh plugin --profile web add --config.strict-dep-builds=false github:longge1213812138/dsh-workbuddy-connect#v0.8.2
 ```
 
-**pi-ai versions are per core line and must not be mixed**: the 0.2.1-rc.1 / rc.2 core lines (upstream 0.7.7 / 0.7.8–0.7.9, this fork 0.8.1) moved to `@earendil-works/pi-ai` 1.3.0 (bundled by the plugin), so a profile-level leftover `overrides: {'@earendil-works/pi-ai': '0.87.1'}` **must be removed** or the plugin fails to load; the 0.2.0-rc.2 core line (plugin 0.7.6) still requires `^0.87.1` — on that line, **do not** upgrade the profile-level pi-ai to 1.x, and do not act on third-party plugin managers' "updatable" prompts, which do not check peer constraints ([#86](https://github.com/corrinehu/dsh-workbuddy-connect/issues/86)).
+**pi-ai versions are per core line and must not be mixed**: the 0.2.1-rc.1 core line and later (upstream 0.7.7 / 0.7.8–0.7.9, this fork 0.8.1 / 0.8.2) moved to `@earendil-works/pi-ai` 1.3.0 (bundled by the plugin), so a profile-level leftover `overrides: {'@earendil-works/pi-ai': '0.87.1'}` **must be removed** or the plugin fails to load; the 0.2.0-rc.2 core line (plugin 0.7.6) still requires `^0.87.1` — on that line, **do not** upgrade the profile-level pi-ai to 1.x, and do not act on third-party plugin managers' "updatable" prompts, which do not check peer constraints ([#86](https://github.com/corrinehu/dsh-workbuddy-connect/issues/86)).
 
 ## Disclaimer
 
