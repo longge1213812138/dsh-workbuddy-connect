@@ -25,16 +25,16 @@
 
 **前置**：本机已安装并登录 WorkBuddy（国内版）或 WorkBuddy AI 桌面 App。插件直接复用 App 的登录状态，账号切换自动跟随，两版互不影响。
 
-**当前主线适配 DSH `0.2.1-rc.2` 与 `0.2.1-rc.3`**；其他内核请先看文末「版本兼容与历史版本」，不要强行安装 main。
+**当前主线适配 DSH `0.2.1-rc.2`、`0.2.1-rc.3` 与 `0.2.2-rc.3`**；其他内核请先看文末「版本兼容与历史版本」，不要强行安装 main。
 
 **推荐：把安装交给本机已有的 Agent**——任何具备终端与文件操作能力的助手（DSH Agent、Codex、Claude Code、Cursor 等）都可以，把下面这段话原样发给它：
 
 ```text
 请帮我安装并验证 DSH（DeepSeek Harness）插件 dsh-workbuddy-connect，源码仓库：https://github.com/longge1213812138/dsh-workbuddy-connect
 先阅读仓库 README，确认我实际使用的界面（Web / Desktop / TUI）与 DSH 内核版本；桌面版以 App 内置核心为准，不要用独立 CLI 的版本代替。
-本仓库当前主线只适配 DSH 0.2.1-rc.2 与 0.2.1-rc.3。版本匹配时，从我的 GitHub 仓库源码安装，不要安装 npm 上同名的旧包：
+本仓库当前主线只适配 DSH 0.2.1-rc.2、0.2.1-rc.3 与 0.2.2-rc.3。版本匹配时，从我的 GitHub 仓库源码安装，不要安装 npm 上同名的旧包：
   dsh plugin --profile web add --config.strict-dep-builds=false github:longge1213812138/dsh-workbuddy-connect
-如果内核是 0.2.1-rc.2 或 0.2.1-rc.3，TUI 也用上面的源码安装；如果内核更旧或更新，先告诉我，不要强行把 main 装到未验证的内核。
+如果内核是 0.2.1-rc.2、0.2.1-rc.3 或 0.2.2-rc.3，TUI 也用上面的源码安装；如果内核更旧或更新，先告诉我，不要强行把 main 装到未验证的内核。
 Desktop 的 profile 可能由 App 管理；先确认我所用的发行版，再探查其合规安装方式，不要绕过它的校验。
 任何本地文件或配置改动，先征得我同意并做好备份。
 装完后验证模型选择器里出现 WorkBuddy 分组，并陪我完成一次简短对话。
@@ -45,8 +45,9 @@ Desktop 的 profile 可能由 App 管理；先确认我所用的发行版，再�
 
 | DSH 内核 | 安装来源 |
 |---|---|
-| `0.2.1-rc.3` | 本仓库 `main`（0.8.2） |
-| `0.2.1-rc.2` | 本仓库 `main`（0.8.2） |
+| `0.2.2-rc.3` | 本仓库 `main`（0.8.3） |
+| `0.2.1-rc.3` | 本仓库 `main`（0.8.3） |
+| `0.2.1-rc.2` | 本仓库 `main`（0.8.3） |
 | `0.2.1-rc.1` | 上游 npm `dsh-workbuddy-connect@0.7.7` |
 | `0.2.0-rc.2` | 上游 npm `dsh-workbuddy-connect@0.7.6` |
 | `0.2.0-rc.1` | 上游 npm `dsh-workbuddy-connect@0.7.0` |
@@ -56,14 +57,14 @@ Desktop 的 profile 可能由 App 管理；先确认我所用的发行版，再�
 <summary>手动安装（命令行，仅 Web / TUI）</summary>
 
 ```sh
-# Web：从本仓库源码安装（当前主线，DSH 0.2.1-rc.2 / rc.3）
+# Web：从本仓库源码安装（当前主线，DSH 0.2.1-rc.2 / rc.3 / 0.2.2-rc.3）
 dsh plugin --profile web add --config.strict-dep-builds=false github:longge1213812138/dsh-workbuddy-connect
 dsh web
 
 # 或固定到某个发布 tag（推荐生产使用）
-dsh plugin --profile web add --config.strict-dep-builds=false github:longge1213812138/dsh-workbuddy-connect#v0.8.2
+dsh plugin --profile web add --config.strict-dep-builds=false github:longge1213812138/dsh-workbuddy-connect#v0.8.3
 
-# TUI：0.2.1-rc.2 / rc.3 内核用上面的源码安装；更旧或更新的内核按上表安装对应版本
+# TUI：0.2.1-rc.2 / rc.3 / 0.2.2-rc.3 内核用上面的源码安装；更旧或更新的内核按上表安装对应版本
 dsh plugin --profile dsh-tui add dsh-workbuddy-connect@0.6.5
 dsh --profile dsh-tui
 ```
@@ -207,14 +208,15 @@ llm-workbuddy:
 
 ## 版本兼容与历史版本
 
-插件版本必须与 DSH 内核匹配，不匹配的组合会导致 DSH 启动失败；桌面版按其内置核心选择插件版本。本仓库从 0.8.0 起接手维护，目前适配 `0.2.1-rc.2` 与 `0.2.1-rc.3`；更旧内核请使用上游 npm 历史版本，不要安装本仓库 main。
+插件版本必须与 DSH 内核匹配，不匹配的组合会导致 DSH 启动失败；桌面版按其内置核心选择插件版本。本仓库从 0.8.0 起接手维护，目前适配 `0.2.1-rc.2`、`0.2.1-rc.3` 与 `0.2.2-rc.3`；更旧内核请使用上游 npm 历史版本，不要安装本仓库 main。
 
-兼容性由 `package.json` 的 `engines.dsh`（`0.2.1-rc.2 || 0.2.1-rc.3`）声明：DSH 的兼容性预检只要发现该字段就只按它判断，`peerDependencies` 不再参与。0.8.1 及更早没有这个字段，只能靠精确钉死的 peer（`0.2.1-rc.2`）判断，所以后台内核升到 rc.3 时会把插件报成 `incompatible-version`，需要手动豁免；0.8.2 起不需要。以后每个新内核都要先实测再手工追加到这段白名单。
+兼容性由 `package.json` 的 `engines.dsh`（`0.2.1-rc.2 || 0.2.1-rc.3 || 0.2.2-rc.3`）声明：DSH 的兼容性预检只要发现该字段就只按它判断，`peerDependencies` 不再参与。0.8.1 及更早没有这个字段，只能靠精确钉死的 peer（`0.2.1-rc.2`）判断，所以后台内核升到 rc.3 时会把插件报成 `incompatible-version`，需要手动豁免；0.8.2 起不需要。桌面 App 内置内核升到 `0.2.2-rc.3` 后，0.8.2 的白名单止于 rc.3，同样会报 `incompatible-version`，0.8.3 已把该内核实测后追加进来。以后每个新内核都要先实测再手工追加到这段白名单。
 
 | DSH 内核 | 推荐版本 / 来源 | 注意事项 |
 |---|---|---|
-| `0.2.1-rc.3` | `0.8.2`（本仓库 main 或 tag） | 当前内核线；由 `engines.dsh` 显式列为已验证内核，无需版本豁免。 |
-| `0.2.1-rc.2` | `0.8.2`（本仓库 main 或 tag） | 同一内核线的上一个 rc；0.8.1 及更早只能靠 peer 判断，装到 rc.3 上会被要求豁免。`0.2.0-rc.2` 与它不同，请核对 App 内置版本。 |
+| `0.2.2-rc.3` | `0.8.3`（本仓库 main 或 tag） | 当前内核线（桌面 App 内置）；由 `engines.dsh` 显式列为已验证内核，无需版本豁免。0.8.2 及更早没有列出它，装到该内核上会被判定为 `incompatible-version`。 |
+| `0.2.1-rc.3` | `0.8.3`（本仓库 main 或 tag） | 同一内核线的上一个 rc；由 `engines.dsh` 显式列为已验证内核，无需版本豁免。0.8.1 及更早只能靠 peer 判断，装到 rc.3 上会被要求豁免。 |
+| `0.2.1-rc.2` | `0.8.3`（本仓库 main 或 tag） | 同一内核线的首个 rc；0.8.1 及更早只能靠 peer 判断，装到 rc.3 上会被要求豁免。`0.2.0-rc.2` 与它不同，请核对 App 内置版本。 |
 | `0.2.1-rc.1` | 上游 npm `0.7.7` | 内核升级到 `@earendil-works/pi-ai` 1.3.0，插件同步自带 1.3.0，历史遗留的 0.87.1 overrides 必须移除（见下方 pi-ai 说明）。 |
 | `0.2.0-rc.2` | 上游 npm `0.7.6` | 上一代内核线；修复企业账号模型目录缺项与国际版对话被渠道校验拦截，勿停留在有注册表回归的 0.7.2。 |
 | `0.2.0-rc.1` | 上游 npm `0.7.0` | 0.7.1 起不再支持 rc.1，请停留本版。 |
@@ -224,6 +226,7 @@ llm-workbuddy:
 
 本仓库更新记录（完整记录见 [releases](https://github.com/longge1213812138/dsh-workbuddy-connect/releases)）：
 
+- **0.8.3**：把桌面 App 内置内核 `0.2.2-rc.3` 追加进 `engines.dsh` 白名单（现为 `0.2.1-rc.2 || 0.2.1-rc.3 || 0.2.2-rc.3`）。App 升级到该内核后，0.8.2 的白名单里没有它，兼容性预检再次把插件报成 `incompatible-version`、宿主 bundle 不启动（插件页显示异常，`status` 里 `hostBundle` 为 `not-started`）；只能在 `compatibility.json` 里为 `0.8.1` 手动补一份 `0.2.2-rc.3` 豁免才能启动。本版在内核上实跑验证后把它写成白名单的一条，安装后无需任何豁免。插件代码行为不变。
 - **0.8.2**：修复安装到 DSH `0.2.1-rc.3` 内核时被判定为 `incompatible-version`、必须手动豁免才能启动的问题。原因在清单而不是代码：`peerDependencies` 把 6 个 DSH 服务包精确钉在 `0.2.1-rc.2`，而 DSH 的兼容性预检在没有 `engines.dsh` 时会用这些精确版本逐个比对当前内核，精确版本永远不会匹配别的预发布版本。本版新增 `engines.dsh: "0.2.1-rc.2 || 0.2.1-rc.3"`，预检改为只看这段显式白名单；同时补上对应的回归测试。插件实际调用的接口在 rc.3 上兼容，代码行为不变。
 - **0.8.1**：修复 `dsh plugin --profile <name> exec dsh-workbuddy-connect status` 在全新 profile 下因缺少 `@deepseek-ai/dsh-home-paths` 而报 `ERR_MODULE_NOT_FOUND`；将该模块加入插件依赖。安装与宿主加载行为不变，适配 DSH 0.2.1-rc.2。
 - **0.8.0**：接手维护；更新仓库地址、包元数据、README 安装与维护说明，并把更新检查指向本仓库；代码行为与 0.7.9 保持一致，适配 DSH 0.2.1-rc.2。

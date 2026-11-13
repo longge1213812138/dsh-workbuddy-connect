@@ -77,6 +77,11 @@ describe('the dsh manifest declares the verified cores', () => {
    * on a prerelease arm silently admitting untested later rcs, and
    * `^0.2.1-rc.2` still matches `0.2.2-rc.1` and `0.2.1` today. Every
    * candidate therefore has to be added here by hand after a real run.
+   *
+   * 0.8.3 appended `0.2.2-rc.3` exactly that way: the Desktop app's bundled
+   * core moved to it, the preflight rejected 0.8.2 with the same
+   * `incompatible-version` code rc.3 had produced, and the plugin was smoke-
+   * tested on 0.2.2-rc.3 before the arm was added.
    */
   it('declares engines.dsh as an explicit allowlist of the tested cores', () => {
     const pkg = JSON.parse(
@@ -85,7 +90,7 @@ describe('the dsh manifest declares the verified cores', () => {
     expect(
       pkg.engines?.dsh,
       'engines.dsh is what the DSH runtime evaluates; without it the pinned peers decide and any core bump is rejected',
-    ).toBe('0.2.1-rc.2 || 0.2.1-rc.3')
+    ).toBe('0.2.1-rc.2 || 0.2.1-rc.3 || 0.2.2-rc.3')
   })
 })
 
